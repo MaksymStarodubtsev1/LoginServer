@@ -14,15 +14,41 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.post('/book', (req, res) => {
-    const name = 'name'
-    console.log('HELLO')
+const loginList = []
 
-    res.send(
-        {
-        description: `${Object.keys(req)}`,
-        value: books
-    });
+app.post('/register', (req, res) => {
+    const {login,password} = req.body
+    let message = 'register - success'
+
+    switch (true) {
+        case loginList.includes(login):
+            message = 'use another login name'
+            break;
+
+        case !password:
+            message = 'use another login password'
+            break;
+    
+        default:
+            loginList.push(login)
+            break;
+    }
+
+    res.send({
+        description: message
+    })
+    
 });
+
+// app.post('/login', (req, res) => {
+//     const name = 'name'
+//     console.log('HELLO')
+
+//     res.send(
+//         {
+//         description: `${req.body.name}`,
+//         value: books
+//     });
+// });
 
 app.listen(port, () => console.log(`Hello world app listening on port ${port}!`));
