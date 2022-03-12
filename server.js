@@ -15,6 +15,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 const loginList = []
+const usersList = []
 
 app.post('/register', (req, res) => {
     const {login,password} = req.body
@@ -30,12 +31,17 @@ app.post('/register', (req, res) => {
             break;
     
         default:
+            usersList.push({
+                login,
+                password
+            })
             loginList.push(login)
             break;
     }
 
     res.send({
-        description: message
+        description: message,
+        users: usersList
     })
     
 });
@@ -50,5 +56,20 @@ app.post('/register', (req, res) => {
 //         value: books
 //     });
 // });
+
+app.post('/login', (req, res) => {
+    const {login,password} = req.body
+    const indexOfUser = usersList.map(el => el.login).indexOf(login);
+
+    let message = 'login - success'
+    let isLogin = indexOfUser && usersList[indexOfUser].password === password
+
+
+    if(isLogin){
+        res.send({
+            description: 'login - success'
+        })
+    }
+});
 
 app.listen(port, () => console.log(`Hello world app listening on port ${port}!`));
